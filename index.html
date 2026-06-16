@@ -33,7 +33,6 @@
         .nav-link.active { color: #16a34a; border-bottom: 2px solid #16a34a; font-weight: 600; }
         .nav-link:hover:not(.active) { color: #15803d; }
         
-        /* Gradients para os cards da Home */
         .card-gradient-1 { background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); }
         .card-gradient-2 { background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); }
         .card-gradient-3 { background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); }
@@ -88,7 +87,6 @@
                     <a onclick="switchView('home')" id="nav-home" class="nav-link active py-5 text-xs md:text-sm uppercase tracking-wide text-slate-600 whitespace-nowrap">Projeto</a>
                     <a onclick="switchView('dashboard')" id="nav-dashboard" class="nav-link py-5 text-xs md:text-sm uppercase tracking-wide text-slate-600 whitespace-nowrap">Dashboard</a>
                     <a onclick="switchView('settings')" id="nav-settings" class="nav-link py-5 text-xs md:text-sm uppercase tracking-wide text-slate-600 whitespace-nowrap">Configurações</a>
-                    <!-- Adicionado Botão de Sair no Navbar -->
                     <a onclick="logout()" class="py-5 text-xs md:text-sm uppercase tracking-wide text-red-500 hover:text-red-700 font-bold whitespace-nowrap cursor-pointer transition-colors ml-4 md:ml-8 flex items-center gap-1">
                         <svg class="w-4 h-4 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         Sair
@@ -101,9 +99,8 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow">
         
-        <!-- VIEW: HOME (RESTAURADA) -->
+        <!-- VIEW: HOME -->
         <div id="view-home" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in">
-            <!-- Hero Section -->
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">Monitoramento Espectral em <span class="text-transparent bg-clip-text bg-gradient-to-r from-usp-600 to-teal-500">Tempo Real</span></h1>
                 <p class="text-lg text-slate-600 mb-8 leading-relaxed">
@@ -119,10 +116,8 @@
                 </div>
             </div>
 
-            <!-- Insights Cards -->
             <h2 class="text-2xl font-bold text-slate-800 mb-8 text-center">Como o sistema funciona?</h2>
             <div class="grid md:grid-cols-3 gap-8 mb-16">
-                <!-- Card 1 -->
                 <div class="card-gradient-1 p-8 rounded-3xl border border-green-100 shadow-sm relative overflow-hidden group">
                     <div class="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center mb-6 shadow-md">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -130,7 +125,6 @@
                     <h3 class="text-xl font-bold text-slate-900 mb-3">IoT na Borda (Edge)</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">Hardware baseado no ESP32-C3 coleta dados em tempo real. A captura automatizada elimina a necessidade de amostragens manuais destrutivas e frequentes, economizando tempo e reagentes.</p>
                 </div>
-                <!-- Card 2 -->
                 <div class="card-gradient-2 p-8 rounded-3xl border border-blue-100 shadow-sm">
                     <div class="w-12 h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center mb-6 shadow-md">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -138,7 +132,6 @@
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Assinatura Espectral</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">O sensor AS7343 de 14 canais (380 nm a 1000 nm) captura a absorbância e fluorescência das células, identificando o estado fisiológico e a concentração de pigmentos como a clorofila-a.</p>
                 </div>
-                <!-- Card 3 -->
                 <div class="card-gradient-3 p-8 rounded-3xl border border-yellow-100 shadow-sm">
                     <div class="w-12 h-12 bg-yellow-500 text-white rounded-xl flex items-center justify-center mb-6 shadow-md">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -148,7 +141,6 @@
                 </div>
             </div>
 
-            <!-- Info Técnica -->
             <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="w-2 h-8 bg-usp-500 rounded-full"></div>
@@ -289,7 +281,6 @@
                 <p class="text-slate-500 mt-1">Gerencie os parâmetros globais e os sensores vinculados à API Segura do Apps Script.</p>
             </div>
 
-            <!-- Parâmetros Globais -->
             <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative mb-10">
                 <h4 class="text-md font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <span class="text-slate-400">⚙️</span> Parâmetros Globais
@@ -337,7 +328,6 @@
                 </button>
             </div>
 
-            <!-- Header da Lista de Sensores com Botão Novo -->
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-slate-800">Sensores Cadastrados</h2>
                 <button onclick="showAddForm()" id="btn-show-add-form" class="bg-usp-600 hover:bg-usp-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition-all">
@@ -345,7 +335,6 @@
                 </button>
             </div>
 
-            <!-- Adicionar Novo Biorreator (OCULTO POR PADRÃO) -->
             <div id="sensor-form-container" class="hidden bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative mb-8 animate-fade-in">
                 <div id="form-mode-badge" class="absolute top-0 right-0 mt-4 mr-8 text-[10px] font-bold text-usp-600 bg-usp-50 px-2 py-1 rounded-md hidden uppercase tracking-widest border border-usp-200">Modo de Edição</div>
                 <h4 id="sensor-form-title" class="text-md font-bold text-slate-800 mb-6 flex items-center gap-2">
@@ -382,7 +371,6 @@
                 </div>
             </div>
 
-            <!-- Lista -->
             <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-widest">
@@ -413,7 +401,7 @@
         // URL DO BANCO CENTRAL DEFINIDA GLOBALMENTE PARA TODO O SISTEMA
         const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycbxvuPYE0EDJQhQVtLEDl09ym9pq36n0RfXYMD288LDR_Z2crTAY0wBiC-RZZwfjOOpL/exec";
 
-        // Variáveis de Sistema (Iniciam limpas na memória - 100% livres de cache)
+        // Variáveis de Sistema
         let biorreatores = {};
         let activeSensorId = null;
         let toleranceMinutes = 120;
@@ -428,9 +416,7 @@
         let currentSpectralData = null;
 
         // =====================================================
-        // ✅ AÇÃO 1: DADOS_CANAIS ATUALIZADO PARA O AS7343
-        // 13 canais enviados pelo ESP32: F1, F2, FZ, F3, F4, 
-        // FY, F5, FXL, F6, F7, F8, FNI, CLR
+        // DADOS_CANAIS ATUALIZADO PARA O AS7343 (13 canais)
         // =====================================================
         const DADOS_CANAIS = {
             'F1':  {onda: 'F1 405nm',  peak: 405, sigma: 10, cor: '#6366f1', dash: 'solid'},
@@ -784,18 +770,36 @@
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('msg-erro-login').classList.add('hidden');
 
+                // ✅ ALTERAÇÃO 1: Verifica se o CSV tem dados após o parse
                 Papa.parse(csvText, {
                     header: true, skipEmptyLines: true,
-                    complete: (res) => processData(res.data),
-                    error: () => { 
-                        const l = document.getElementById('loading');
-                        if(l) { l.innerHTML = "<p class='text-red-500'>Erro ao ler os dados CSV recebidos da API.</p>"; l.style.display = 'flex'; }
+                    complete: (res) => {
+                        // Se não houver dados (apenas cabeçalho ou vazio)
+                        if (!res.data || res.data.length === 0) {
+                            document.getElementById('loading').innerHTML = 
+                                '<p class="text-slate-500 text-center">📭 Nenhuma medição registrada.<br><span class="text-xs">Aguardando a primeira transmissão do ESP32.</span></p>';
+                            document.getElementById('loading').style.display = 'flex';
+                            document.getElementById('dashboard-content').style.display = 'none';
+                            return;
+                        }
+                        processData(res.data);
+                    },
+                    error: (err) => {
+                        console.error("Erro ao parsear CSV:", err);
+                        document.getElementById('loading').innerHTML = 
+                            '<p class="text-red-500">Erro ao interpretar os dados.<br><span class="text-xs">Verifique a planilha e tente novamente.</span></p>';
+                        document.getElementById('loading').style.display = 'flex';
+                        document.getElementById('dashboard-content').style.display = 'none';
                     }
                 });
 
             } catch (err) {
                 const l = document.getElementById('loading');
-                if(l) { l.innerHTML = "<p class='text-red-500'>Erro de comunicação. O servidor do Google pode estar indisponível ou o link está errado.</p>"; l.style.display = 'flex'; }
+                if(l) { 
+                    l.innerHTML = "<p class='text-red-500'>Erro de comunicação. O servidor do Google pode estar indisponível ou o link está errado.</p>"; 
+                    l.style.display = 'flex'; 
+                }
+                document.getElementById('dashboard-content').style.display = 'none';
             }
         }
 
@@ -862,9 +866,17 @@
         }
 
         // =====================================
-
+        // ✅ ALTERAÇÃO 2: processData com verificação inicial
+        // =====================================
         function processData(rawData) {
-            if (!rawData || rawData.length === 0) return;
+            if (!rawData || rawData.length === 0) {
+                console.warn("processData recebeu dados vazios.");
+                document.getElementById('loading').innerHTML = 
+                    '<p class="text-slate-500 text-center">📭 Nenhuma medição registrada.<br><span class="text-xs">Aguardando dados do sensor.</span></p>';
+                document.getElementById('loading').style.display = 'flex';
+                document.getElementById('dashboard-content').style.display = 'none';
+                return;
+            }
             let keyDate = Object.keys(rawData[0])[0]; 
             window.currentRawData = rawData;
             let now = new Date().getTime();
@@ -972,9 +984,6 @@
                     const arr = data.spectral[ch];
                     latest[ch] = arr[arr.length - 1] || 0;
                 });
-                // =====================================================
-                // ✅ AÇÃO 2: ORDER ATUALIZADA PARA OS 13 CANAIS DO AS7343
-                // =====================================================
                 const order = ['CLR', 'FNI', 'F1', 'F2', 'FZ', 'F3', 'F4', 'FY', 'F5', 'FXL', 'F6', 'F7', 'F8'];
                 let traces = order.map(ch => {
                     const info = DADOS_CANAIS[ch];
