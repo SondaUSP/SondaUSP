@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SondaUSP - Painel Espectral</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <header class="bg-slate-950 border-b border-slate-800 px-6 py-4 flex flex-wrap justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-xl border border-emerald-500/30">
+                <i data-lucide="activity" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    SondaUSP <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">v5.1 Stable</span>
+                </h1>
+                <p class="text-xs text-slate-400">Monitoramento Multiespectral de Biorreatores</p>
+            </div>
+        </div>
+
+        <nav class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+            <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-emerald-500 text-white shadow-md">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="switchTab('config')" id="btn-tab-config" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                <span>Configurações</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full transition-all duration-300">
+        
+        <div id="tab-dashboard" class="space-y-6 block">
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-wrap justify-between items-center gap-4 shadow-lg">
+                <div class="flex items-center space-x-3">
+                    <label for="sensor-selector" class="text-sm font-medium text-slate-400 whitespace-nowrap">Biorreator Ativo:</label>
+                    <select id="sensor-selector" onchange="loadActiveSensorData()" class="bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 min-w-[200px] transition-all">
+                        </select>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="fetchData()" class="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer">
+                        <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i>
+                        <span>Sincronizar</span>
+                    </button>
+                    <div id="status-badge" class="flex items-center space-x-2 bg-slate-900 border border-slate-800 text-slate-400 px-4 py-2 rounded-xl text-sm font-medium">
+                        <span class="w-2 h-2 rounded-full bg-slate-500" id="status-dot"></span>
+                        <span id="status-text">Aguardando</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-md">
+                    <p class="text-xs font-medium text-slate-400 tracking-wider uppercase mb-1">Concentração Biomassa</p>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-3xl font-black text-white" id="val-biomassa">0.00</span>
+                        <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">g/L</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 md:col-span-2">
+                    <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-md">
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase mb-1">Temperatura</p>
+                        <div class="flex items-baseline justify-between">
+                            <span class="text-3xl font-bold text-white" id="val-temp">0.0</span>
+                            <span class="text-sm font-medium text-slate-400">°C</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-md">
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase mb-1">Estado do Sistema</p>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <span class="text-xl font-bold text-emerald-400 truncate" id="val-state">N/A</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-md">
+                    <p class="text-xs font-medium text-slate-400 tracking-wider uppercase mb-1">Última Atualização</p>
+                    <div class="flex items-baseline justify-between mt-2">
+                        <span class="text-sm font-medium text-slate-300" id="val-time">--:--:--</span>
+                        <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="spline" class="w-5 h-5 text-emerald-400"></i> Perfil de Absorbância Multiespectral (350 - 1000 nm)
+                    </h3>
+                </div>
+                <div id="chart-spectral" class="w-full h-[400px] bg-slate-900/50 rounded-xl"></div>
+            </div>
+        </div>
+
+        <div id="tab-config" class="space-y-6 hidden">
+            <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 max-w-2xl mx-auto shadow-xl space-y-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Gerenciamento de APIs</h3>
+                    <p class="text-xs text-slate-400">Adicione os endpoints gerados pelo Google Apps Script para espelhar seus dados de bancada.</p>
+                </div>
+
+                <div class="space-y-4 border-t border-slate-800 pt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Identificação / Tag:</label>
+                            <input type="text" id="new-sensor-name" placeholder="Ex: Biorreator_Ciano_01" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Senha de Acesso da API:</label>
+                            <input type="password" id="new-sensor-pass" value="SondaUSP@2026" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">URL Completa do Web App do Google Apps Script:</label>
+                        <input type="text" id="new-sensor-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <button onclick="addNewSensor()" class="w-full flex justify-center items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg transition-all cursor-pointer">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Adicionar e Registrar Biorreator</span>
+                    </button>
+                </div>
+
+                <div class="border-t border-slate-800 pt-4">
+                    <h4 class="text-sm font-bold text-slate-300 mb-3">Biorreatores Conectados</h4>
+                    <div id="sensors-list" class="space-y-2">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 mt-6">
+        Instituto Federal de São Paulo (IFSP Salto) & CEPEMA-USP &copy; 2026
+    </footer>
+
+    <script>
+        // Mapeamento dos comprimentos de onda exatos do hardware (350nm a 1000nm)
+        const COMPRIMENTOS_ONDA = [350, 410, 440, 470, 510, 550, 583, 620, 670, 700, 730, 810, 860, 940, 980, 1000];
+        
+        let sensoresCadastrados = [];
+        let dadosLocaisAtuais = [];
+
+        // Inicialização do Painel
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initLocalStorage();
+            renderSensorSelectors();
+            renderSensorsConfigList();
+            initEmptyChart();
+            
+            if (sensoresCadastrados.length > 0) {
+                fetchData();
+            }
+        });
+
+        function initLocalStorage() {
+            const cache = localStorage.getItem('sonda_sensors');
+            if (cache) {
+                sensoresCadastrados = JSON.parse(cache);
+            } else {
+                // Configuração padrão de segurança
+                sensoresCadastrados = [];
+                localStorage.setItem('sonda_sensors', JSON.stringify(sensoresCadastrados));
+            }
+        }
+
+        function switchTab(tab) {
+            const d = document.getElementById('tab-dashboard');
+            const c = document.getElementById('tab-config');
+            const btnD = document.getElementById('btn-tab-dashboard');
+            const btnC = document.getElementById('btn-tab-config');
+
+            if (tab === 'dashboard') {
+                d.className = "space-y-6 block";
+                c.className = "space-y-6 hidden";
+                btnD.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-emerald-500 text-white shadow-md";
+                btnC.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white";
+            } else {
+                d.className = "space-y-6 hidden";
+                c.className = "space-y-6 block";
+                btnC.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-emerald-500 text-white shadow-md";
+                btnD.className = "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white";
+            }
+        }
+
+        function renderSensorSelectors() {
+            const selector = document.getElementById('sensor-selector');
+            selector.innerHTML = '';
+            if (sensoresCadastrados.length === 0) {
+                selector.innerHTML = '<option value="">Nenhum cadastrado</option>';
+                return;
+            }
+            sensoresCadastrados.forEach((s, idx) => {
+                selector.innerHTML += `<option value="${idx}">${s.name}</option>`;
+            });
+        }
+
+        function renderSensorsConfigList() {
+            const container = document.getElementById('sensors-list');
+            container.innerHTML = '';
+            if (sensoresCadastrados.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic p-3 bg-slate-900 rounded-xl text-center border border-slate-800/50">Nenhuma API mapeada até o momento.</p>`;
+                return;
+            }
+            sensoresCadastrados.forEach((s, idx) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-3 rounded-xl">
+                        <div class="truncate pr-4">
+                            <p class="text-sm font-bold text-white">${s.name}</p>
+                            <p class="text-[10px] text-slate-500 truncate max-w-[350px]">${s.url}</p>
+                        </div>
+                        <button onclick="deleteSensor(${idx})" class="text-rose-400 hover:text-rose-500 hover:bg-rose-500/10 p-2 rounded-lg transition-all cursor-pointer">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function addNewSensor() {
+            const name = document.getElementById('new-sensor-name').value.trim();
+            const url = document.getElementById('new-sensor-url').value.trim();
+            const pass = document.getElementById('new-sensor-pass').value.trim();
+
+            if (!name || !url) {
+                alert("Por favor, preencha o nome identificador e a URL da API do Google.");
+                return;
+            }
+
+            sensoresCadastrados.push({ name: name, url: url, pass: pass });
+            localStorage.setItem('sonda_sensors', JSON.stringify(sensoresCadastrados));
+            
+            document.getElementById('new-sensor-name').value = '';
+            document.getElementById('new-sensor-url').value = '';
+            
+            renderSensorSelectors();
+            renderSensorsConfigList();
+            switchTab('dashboard');
+            fetchData();
+        }
+
+        function deleteSensor(idx) {
+            if (confirm("Deseja realmente remover este vínculo de Biorreator?")) {
+                sensoresCadastrados.splice(idx, 1);
+                localStorage.setItem('sonda_sensors', JSON.stringify(sensoresCadastrados));
+                renderSensorSelectors();
+                renderSensorsConfigList();
+                initEmptyChart();
+            }
+        }
+
+        function updateStatus(dotClass, text) {
+            const dot = document.getElementById('status-dot');
+            const txt = document.getElementById('status-text');
+            dot.className = `w-2 h-2 rounded-full ${dotClass}`;
+            txt.innerText = text;
+        }
+
+        function initEmptyChart() {
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                margin: { l: 50, r: 20, t: 20, b: 50 },
+                xaxis: { title: { text: 'Comprimento de Onda (nm)', font: { color: '#94a3b8', size: 11 } }, tickcolor: '#334155', gridcolor: '#1e293b', font: { color: '#94a3b8' }, range: [340, 1010] },
+                yaxis: { title: { text: 'Absorbância Absoluta', font: { color: '#94a3b8', size: 11 } }, tickcolor: '#334155', gridcolor: '#1e293b', font: { color: '#94a3b8' } }
+            };
+            Plotly.newPlot('chart-spectral', [], layout, { responsive: true, displayModeBar: false });
+        }
+
+        // DISPARADOR DE LEITURA DA API DO GOOGLE
+        function fetchData() {
+            const idx = document.getElementById('sensor-selector').value;
+            if (idx === "" || !sensoresCadastrados[idx]) {
+                updateStatus('bg-amber-500', 'Sem conexões');
+                return;
+            }
+
+            const sensor = sensoresCadastrados[idx];
+            const icon = document.getElementById('sync-icon');
+            icon.classList.add('animate-spin');
+            updateStatus('bg-blue-500 animate-pulse', 'Baixando dados...');
+
+            // Constrói requisição segura passando a senha
+            const targetUrl = `${sensor.url}?senha=${encodeURIComponent(sensor.pass)}`;
+
+            fetch(targetUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Sem autorização pública");
+                    return response.text();
+                })
+                .then(csvText => {
+                    processCSVData(csvText);
+                })
+                .catch(err => {
+                    console.error(err);
+                    updateStatus('bg-rose-500', 'Erro na API Google');
+                    alert("⚠️ Erro ao conectar ou processar dados da API. Verifique se a implantação do Apps Script está configurada com permissão de acesso para 'Qualquer pessoa'.");
+                })
+                .finally(() => {
+                    icon.classList.remove('animate-spin');
+                });
+        }
+
+        // PROCESSADOR INTERNO DE CSV BRUTO
+        function processCSVData(text) {
+            if (!text || text.trim() === "" || text.startsWith("Acesso Negado")) {
+                updateStatus('bg-rose-500', 'Acesso Negado');
+                return;
+            }
+
+            // Divide as linhas preservando a estrutura nativa
+            const linhas = text.split('\n').map(l => l.trim()).filter(l => l !== "");
+            if (linhas.length <= 1) {
+                updateStatus('bg-yellow-500', 'Banco Vazio');
+                return;
+            }
+
+            // Mapeamento dinâmico de cabeçalho estrutural
+            const cabecalho = linhas[0].toLowerCase().split(',');
+            const dadosTratados = [];
+
+            for (let i = 1; i < linhas.length; i++) {
+                const colunas = linhas[i].split(',');
+                if (colunas.length !== cabecalho.length) continue;
+
+                let linhaObjeto = {};
+                cabecalho.forEach((nome, colIdx) => {
+                    linhaObjeto[nome] = colunas[colIdx];
+                });
+                dadosTratados.push(linhaObjeto);
+            }
+
+            dadosLocaisAtuais = dadosTratados;
+            plotSpectralChart();
+            updateStatus('bg-emerald-500', 'Sincronizado');
+        }
+
+        // IMPRESSÃO E PLOTAGEM DOS RESULTADOS
+        function plotSpectralChart() {
+            if (dadosLocaisAtuais.length === 0) return;
+
+            // Pega a última linha de dados inserida (Tempo real mais recente)
+            const ultimaLeitura = dadosLocaisAtuais[dadosLocaisAtuais.length - 1];
+
+            // Atualiza os painéis numéricos superiores
+            document.getElementById('val-biomassa').innerText = parseFloat(ultimaLeitura['biomass'] || 0).toFixed(3);
+            document.getElementById('val-temp').innerText = parseFloat(ultimaLeitura['temp'] || 0).toFixed(1);
+            document.getElementById('val-state').innerText = ultimaLeitura['state'] || 'Operação';
+            document.getElementById('val-time').innerText = ultimaLeitura['data_hora'] ? ultimaLeitura['data_hora'].split(' ')[1] : '--:--:--';
+
+            // Mapeamento dos fotodiodos espectrais (F1 a FNI + CLR)
+            const chavesCanais = ['f1', 'f2', 'fz', 'f3', 'f4', 'fy', 'f5', 'fxl', 'f6', 'f7', 'f8', 'fni', 'clr'];
+            
+            // Filtra os comprimentos de onda equivalentes à quantidade de chaves lidas do hardware
+            const eixoX_nm = COMPRIMENTOS_ONDA.slice(0, chavesCanais.length);
+            const eixoY_Absorbancia = chavesCanais.map(canal => parseFloat(ultimaLeitura[canal] || 0));
+
+            // Configuração visual do traço do gráfico (Linha Suave Espectral)
+            const trace = {
+                x: eixoX_nm,
+                y: eixoY_Absorbancia,
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: { shape: 'spline', color: '#10b981', width: 3 },
+                marker: { size: 7, color: '#34d399', bordercolor: '#047857', linewidth: 1 },
+                name: 'Último Espectro'
+            };
+
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                margin: { l: 50, r: 20, t: 20, b: 50 },
+                xaxis: { title: { text: 'Comprimento de Onda (nm)', font: { color: '#94a3b8', size: 11 } }, tickcolor: '#334155', gridcolor: '#1e293b', font: { color: '#94a3b8' }, range: [340, 1010] },
+                yaxis: { title: { text: 'Absorbância Absoluta', font: { color: '#94a3b8', size: 11 } }, tickcolor: '#334155', gridcolor: '#1e293b', font: { color: '#94a3b8' }, autorange: true }
+            };
+
+            Plotly.newPlot('chart-spectral', [trace], layout, { responsive: true, displayModeBar: false });
+        }
+
+        function loadActiveSensorData() {
+            fetchData();
+        }
+    </script>
+</body>
+</html>
