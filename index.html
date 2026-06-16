@@ -776,10 +776,21 @@
                     complete: (res) => {
                         // Se não houver dados (apenas cabeçalho ou vazio)
                         if (!res.data || res.data.length === 0) {
+                            // Limpa os dados antigos
+                            currentSpectralData = null;
+                            window.currentRawData = null;
+                            
+                            // Oculta o conteúdo do dashboard
+                            document.getElementById('dashboard-content').style.display = 'none';
+                            
+                            // Exibe a mensagem no loading
                             document.getElementById('loading').innerHTML = 
                                 '<p class="text-slate-500 text-center">📭 Nenhuma medição registrada.<br><span class="text-xs">Aguardando a primeira transmissão do ESP32.</span></p>';
                             document.getElementById('loading').style.display = 'flex';
-                            document.getElementById('dashboard-content').style.display = 'none';
+                            
+                            // Limpa os gráficos
+                            Plotly.purge('grafico-cinetica');
+                            Plotly.purge('grafico-espectral');
                             return;
                         }
                         processData(res.data);
@@ -866,15 +877,26 @@
         }
 
         // =====================================
-        // ✅ ALTERAÇÃO 2: processData com verificação inicial
+        // ✅ ALTERAÇÃO 2: processData com verificação inicial e limpeza
         // =====================================
         function processData(rawData) {
             if (!rawData || rawData.length === 0) {
                 console.warn("processData recebeu dados vazios.");
+                // Limpa os dados antigos
+                currentSpectralData = null;
+                window.currentRawData = null;
+                
+                // Oculta o conteúdo do dashboard
+                document.getElementById('dashboard-content').style.display = 'none';
+                
+                // Exibe a mensagem no loading
                 document.getElementById('loading').innerHTML = 
                     '<p class="text-slate-500 text-center">📭 Nenhuma medição registrada.<br><span class="text-xs">Aguardando dados do sensor.</span></p>';
                 document.getElementById('loading').style.display = 'flex';
-                document.getElementById('dashboard-content').style.display = 'none';
+                
+                // Limpa os gráficos
+                Plotly.purge('grafico-cinetica');
+                Plotly.purge('grafico-espectral');
                 return;
             }
             let keyDate = Object.keys(rawData[0])[0]; 
