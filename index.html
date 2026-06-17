@@ -400,7 +400,7 @@
         
         // ⚠️ ⚠️ ⚠️ ATENÇÃO: Substitua esta URL pela URL que você está usando atualmente (a que gerou ao vincular a nova planilha) ⚠️ ⚠️ ⚠️
         // Exemplo: const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycb.../exec";
-        const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycbyStPSqH0H1bS-e-g5LEGvsT80LebN5Ep88Oc7p-tlrX0-6Biahug3nObzREPJ3S0T5/exec";
+        const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycbxvuPYE0EDJQhQVtLEDl09ym9pq36n0RfXYMD288LDR_Z2crTAY0wBiC-RZZwfjOOpL/exec";
 
         // Variáveis de Sistema
         let biorreatores = {};
@@ -417,22 +417,22 @@
         let currentSpectralData = null;
 
         // =====================================================
-        // DADOS_CANAIS ATUALIZADO PARA O AS7343 (13 canais)
+        // ✅ DADOS_CANAIS ATUALIZADO (curvas realistas, nomes curtos)
         // =====================================================
         const DADOS_CANAIS = {
-            'F1':  {onda: 'F1 405nm',  peak: 405, sigma: 10, cor: '#6366f1', dash: 'solid'},
-            'F2':  {onda: 'F2 425nm',  peak: 425, sigma: 10, cor: '#3b82f6', dash: 'solid'},
-            'FZ':  {onda: 'FZ 450nm',  peak: 450, sigma: 10, cor: '#0ea5e9', dash: 'solid'},
-            'F3':  {onda: 'F3 475nm',  peak: 475, sigma: 10, cor: '#14b8a6', dash: 'solid'},
-            'F4':  {onda: 'F4 515nm',  peak: 515, sigma: 10, cor: '#22c55e', dash: 'solid'},
-            'FY':  {onda: 'FY 555nm',  peak: 555, sigma: 12, cor: '#84cc16', dash: 'solid'},
-            'F5':  {onda: 'F5 550nm',  peak: 550, sigma: 10, cor: '#eab308', dash: 'solid'},
-            'FXL': {onda: 'FXL 600nm', peak: 600, sigma: 12, cor: '#f97316', dash: 'solid'},
-            'F6':  {onda: 'F6 640nm',  peak: 640, sigma: 10, cor: '#ef4444', dash: 'solid'},
-            'F7':  {onda: 'F7 690nm',  peak: 690, sigma: 12, cor: '#ec4899', dash: 'solid'},
-            'F8':  {onda: 'F8 745nm',  peak: 745, sigma: 12, cor: '#8b5cf6', dash: 'solid'},
-            'FNI': {onda: 'NIR 855nm', peak: 855, sigma: 12, cor: '#991b1b', dash: 'solid'},
-            'CLR': {onda: 'VIS (clr)', peak: 550, sigma: 180, cor: '#475569', dash: 'dash'}
+            'F1':  { onda: 'F1',  peak: 405, sigma: 17.0, cor: '#1f77b4', dash: 'solid' },
+            'F2':  { onda: 'F2',  peak: 435, sigma: 10.6, cor: '#ff7f0e', dash: 'solid' },
+            'FZ':  { onda: 'FZ',  peak: 450, sigma: 25.5, cor: '#2ca02c', dash: 'solid' },
+            'F3':  { onda: 'F3',  peak: 475, sigma: 14.9, cor: '#d62728', dash: 'solid' },
+            'F4':  { onda: 'F4',  peak: 510, sigma: 14.9, cor: '#9467bd', dash: 'solid' },
+            'FY':  { onda: 'FY',  peak: 550, sigma: 46.7, cor: '#8c564b', dash: 'solid' },
+            'F5':  { onda: 'F5',  peak: 570, sigma: 14.9, cor: '#e377c2', dash: 'solid' },
+            'FXL': { onda: 'FXL', peak: 610, sigma: 36.1, cor: '#7f7f7f', dash: 'solid' },
+            'F6':  { onda: 'F6',  peak: 650, sigma: 14.9, cor: '#bcbd22', dash: 'solid' },
+            'F7':  { onda: 'F7',  peak: 690, sigma: 19.1, cor: '#17becf', dash: 'solid' },
+            'F8':  { onda: 'F8',  peak: 745, sigma: 19.1, cor: '#1a55ff', dash: 'solid' },
+            'FNI': { onda: 'NIR', peak: 855, sigma: 22.9, cor: '#a93226', dash: 'solid' },
+            'CLR': { onda: 'VIS', peak: 550, sigma: 80.0, cor: '#2c3e50', dash: 'dash' }
         };
 
         const CORES_FASES = {
@@ -1007,7 +1007,10 @@
                     const arr = data.spectral[ch];
                     latest[ch] = arr[arr.length - 1] || 0;
                 });
-                const order = ['CLR', 'FNI', 'F1', 'F2', 'FZ', 'F3', 'F4', 'FY', 'F5', 'FXL', 'F6', 'F7', 'F8'];
+                // =====================================================
+                // ✅ ORDER ATUALIZADA (segundo a legenda do datasheet)
+                // =====================================================
+                const order = ['F1', 'F2', 'FZ', 'F3', 'F4', 'FY', 'F5', 'FXL', 'F6', 'F7', 'F8', 'FNI', 'CLR'];
                 let traces = order.map(ch => {
                     const info = DADOS_CANAIS[ch];
                     const amplitude = latest[ch] || 0.1;
@@ -1021,7 +1024,15 @@
                 });
                 Plotly.newPlot('grafico-espectral', traces, {
                     font: { family: 'Inter' }, margin: { l: 40, r: 20, t: 10, b: 40 },
-                    xaxis: { title: 'nm', range: [350, 1050], gridcolor: "#f1f5f9" },
+                    // =====================================================
+                    // ✅ EIXO X AJUSTADO: começa em 350 nm, marcas a cada 50 nm
+                    // =====================================================
+                    xaxis: { 
+                        title: 'nm', 
+                        range: [350, 1000], 
+                        tickvals: [350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
+                        gridcolor: "#f1f5f9" 
+                    },
                     yaxis: { title: 'U.A.', gridcolor: "#f1f5f9", rangemode: 'tozero' },
                     showlegend: false, hovermode: 'closest'
                 }, {responsive: true, displayModeBar: false});
