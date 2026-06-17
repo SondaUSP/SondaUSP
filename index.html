@@ -398,7 +398,8 @@
         // --- LÓGICA DE SESSÃO DA API SEGURA ---
         let sessaoSenha = sessionStorage.getItem('cepema_auth_token') || '';
         
-        // URL DO BANCO CENTRAL DEFINIDA GLOBALMENTE PARA TODO O SISTEMA
+        // ⚠️ ⚠️ ⚠️ ATENÇÃO: Substitua esta URL pela URL que você está usando atualmente (a que gerou ao vincular a nova planilha) ⚠️ ⚠️ ⚠️
+        // Exemplo: const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycb.../exec";
         const URL_BANCO_CENTRAL = "https://script.google.com/macros/s/AKfycbyStPSqH0H1bS-e-g5LEGvsT80LebN5Ep88Oc7p-tlrX0-6Biahug3nObzREPJ3S0T5/exec";
 
         // Variáveis de Sistema
@@ -770,7 +771,7 @@
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('msg-erro-login').classList.add('hidden');
 
-                // ✅ ALTERAÇÃO 1: Verifica se o CSV tem dados após o parse
+                // ✅ CORREÇÃO: Verifica se o CSV tem dados após o parse
                 Papa.parse(csvText, {
                     header: true, skipEmptyLines: true,
                     complete: (res) => {
@@ -877,7 +878,7 @@
         }
 
         // =====================================
-        // ✅ ALTERAÇÃO 2: processData com verificação inicial e limpeza
+        // ✅ processData com verificação inicial e limpeza
         // =====================================
         function processData(rawData) {
             if (!rawData || rawData.length === 0) {
