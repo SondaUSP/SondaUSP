@@ -130,7 +130,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Assinatura Espectral</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">O sensor AS7343 de 14 canais (380 nm a 1000 nm) captura a absorbância e fluorescência das células, identificando o estado fisiológico e a concentração de pigmentos como a clorofila-a.</p>
+                    <p class="text-slate-600 text-sm leading-relaxed">O sensor multiespectral de 14 canais (380 nm a 1000 nm) captura a absorbância e fluorescência das células, identificando o estado fisiológico e a concentração de pigmentos como a clorofila-a.</p>
                 </div>
                 <div class="card-gradient-3 p-8 rounded-3xl border border-yellow-100 shadow-sm">
                     <div class="w-12 h-12 bg-yellow-500 text-white rounded-xl flex items-center justify-center mb-6 shadow-md">
@@ -1028,12 +1028,12 @@
                     // ✅ EIXO X AJUSTADO: começa em 350 nm, marcas a cada 50 nm
                     // =====================================================
                     xaxis: { 
-                        title: 'nm', 
+                        title: 'Wavelength / λ [nm]', 
                         range: [350, 1000], 
                         tickvals: [350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
                         gridcolor: "#f1f5f9" 
                     },
-                    yaxis: { title: 'U.A.', gridcolor: "#f1f5f9", rangemode: 'tozero' },
+                    yaxis: { title: 'Spectral responsivity', gridcolor: "#f1f5f9", rangemode: 'tozero' },
                     showlegend: false, hovermode: 'closest'
                 }, {responsive: true, displayModeBar: false});
             }
